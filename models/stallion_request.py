@@ -24,11 +24,14 @@ class StallionExpressRequest:
     # ------------------------------------------------------------------
 
     def _get_headers(self):
-        return {
+        headers = {
             'Authorization': f'Bearer {self.api_token}',
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
+        _logger.info(f"[Stallion] Using base_url: {self.base_url}")
+        _logger.info(f"[Stallion] Token length: {len(self.api_token) if self.api_token else 0}")
+        return headers
 
     def _request(self, method, endpoint, payload=None):
         url = f'{self.base_url}/{endpoint.lstrip("/")}'
