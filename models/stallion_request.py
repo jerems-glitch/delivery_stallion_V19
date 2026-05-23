@@ -38,9 +38,9 @@ class StallionExpressRequest:
         _logger.info(f"[Stallion] REQUEST HEADERS DEBUG")
         _logger.info(f"Base URL       : {self.base_url}")
         _logger.info(f"Token length   : {len(token)}")
-        _logger.info(f"Token starts   : {token[:15]}... (hidden)")
+        _logger.info(f"Token starts   : {token[:20]}... (hidden)")
         _logger.info(f"Production Mode: {self.base_url == STALLION_PROD_URL}")
-        _logger.info(f"Full Auth      : {headers['Authorization'][:40]}...")
+        _logger.info(f"Full Auth      : {headers['Authorization'][:50]}...")
         _logger.info("=" * 70)
 
         return headers
