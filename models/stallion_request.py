@@ -24,13 +24,26 @@ class StallionExpressRequest:
     # ------------------------------------------------------------------
 
     def _get_headers(self):
+        """Build headers and log them for debugging"""
+        token = (self.api_token or '').strip()
+
         headers = {
-            'Authorization': f'Bearer {self.api_token}',
+            'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
-        _logger.info(f"[Stallion] Using base_url: {self.base_url}")
-        _logger.info(f"[Stallion] Token length: {len(self.api_token) if self.api_token else 0}")
+
+        # === DEBUG LOGGING ===
+        _logger.info("=" * 60)
+        _logger.info(f"[Stallion] REQUEST HEADERS DEBUG")
+        _logger.info(f"Base URL     : {self.base_url}")
+        _logger.info(f"Endpoint     : /postage-types")
+        _logger.info(f"Token length : {len(token)}")
+        _logger.info(f"Token starts : {token[:10]}... (hidden)")
+        _logger.info(f"Use Production: {self.use_production}")
+        _logger.info(f"Full Auth Header: {headers['Authorization'][:30]}...")
+        _logger.info("=" * 60)
+
         return headers
 
     def _request(self, method, endpoint, payload=None):
