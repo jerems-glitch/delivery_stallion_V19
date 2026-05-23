@@ -65,9 +65,10 @@ class StallionExpressRequest:
                 timeout=30,
             )
 
+            # Log full response for debugging
             if self.debug_logger:
                 self.debug_logger(
-                    f'[Stallion] Status: {response.status_code}  Body: {response.text[:800]}',
+                    f'[Stallion] Status: {response.status_code} | Body: {response.text[:1000]}',
                     'stallion_express',
                     'response',
                 )
@@ -80,33 +81,20 @@ class StallionExpressRequest:
         except requests.exceptions.ConnectionError as e:
             raise UserError(f'Cannot connect to Stallion Express API: {e}')
 
-
         except requests.exceptions.HTTPError as e:
-
             try:
-
                 err_body = response.json()
-
                 error_msg = (
-
                         err_body.get('message') or
-
                         err_body.get('error') or
-
                         err_body.get('detail') or
-
-                        str(err_body)
-
+                        str(err_body)[:500]
                 )
-
             except Exception:
-
                 error_msg = response.text[:500] or str(e)
 
-            full_error = f"API responded with failure: {error_msg}"
-
-            _logger.error(f"[Stallion] Failed {url} → Status {response.status_code} | {full_error}")
-
+            full_error = f"API responded with failure: {error_msg} (Status {response.status_code})"
+            _logger.error(f"[Stallion] Failed {url} → {full_error}")
             raise UserError(full_error) from e
 
         result = response.json()
@@ -119,7 +107,6 @@ class StallionExpressRequest:
             )
 
         return result
-
     # ------------------------------------------------------------------
     # Public API methods
     # ------------------------------------------------------------------
