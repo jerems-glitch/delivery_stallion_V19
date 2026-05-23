@@ -34,15 +34,14 @@ class StallionExpressRequest:
         }
 
         # === DEBUG LOGGING ===
-        _logger.info("=" * 60)
+        _logger.info("=" * 70)
         _logger.info(f"[Stallion] REQUEST HEADERS DEBUG")
-        _logger.info(f"Base URL     : {self.base_url}")
-        _logger.info(f"Endpoint     : /postage-types")
-        _logger.info(f"Token length : {len(token)}")
-        _logger.info(f"Token starts : {token[:10]}... (hidden)")
-        _logger.info(f"Use Production: {self.use_production}")
-        _logger.info(f"Full Auth Header: {headers['Authorization'][:30]}...")
-        _logger.info("=" * 60)
+        _logger.info(f"Base URL       : {self.base_url}")
+        _logger.info(f"Token length   : {len(token)}")
+        _logger.info(f"Token starts   : {token[:15]}... (hidden)")
+        _logger.info(f"Production Mode: {self.base_url == STALLION_PROD_URL}")
+        _logger.info(f"Full Auth      : {headers['Authorization'][:40]}...")
+        _logger.info("=" * 70)
 
         return headers
 
