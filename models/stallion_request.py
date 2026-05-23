@@ -2,6 +2,7 @@
 import json
 import logging
 import requests
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -47,24 +48,38 @@ class StallionExpressRequest:
                 json=payload,
                 timeout=30,
             )
+
+            if self.debug_logger:
+                self.debug_logger(
+                    f'[Stallion] Status: {response.status_code}  Body: {response.text[:800]}',
+                    'stallion_express',
+                    'response',
+                )
+
             response.raise_for_status()
+
         except requests.exceptions.Timeout:
-            raise Exception('Stallion Express API timed out. Please try again.')
+            raise UserError('Stallion Express API timed out. Please try again later.')
+
         except requests.exceptions.ConnectionError as e:
-            raise Exception(f'Cannot connect to Stallion Express API: {e}')
+            raise UserError(f'Cannot connect to Stallion Express API: {e}')
+
         except requests.exceptions.HTTPError as e:
             try:
                 err_body = response.json()
-                msg = err_body.get('message') or err_body.get('error') or str(e)
+                msg = err_body.get('message') or err_body.get('error') or response.text[:200]
             except Exception:
-                msg = str(e)
-            raise Exception(f'Stallion Express API error: {msg}')
+                msg = response.text[:200] or str(e)
+
+            full_error = f"Stallion Express API error: {msg}"
+            _logger.error(f"[Stallion] Failed {url} → {full_error}")
+            raise UserError(full_error) from e
 
         result = response.json()
 
         if self.debug_logger:
             self.debug_logger(
-                f'[Stallion] response={json.dumps(result)}',
+                f'[Stallion] Success: {json.dumps(result)}',
                 'stallion_express',
                 'response',
             )
