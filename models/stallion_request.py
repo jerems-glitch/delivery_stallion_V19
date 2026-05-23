@@ -80,15 +80,33 @@ class StallionExpressRequest:
         except requests.exceptions.ConnectionError as e:
             raise UserError(f'Cannot connect to Stallion Express API: {e}')
 
-        except requests.exceptions.HTTPError as e:
-            try:
-                err_body = response.json()
-                msg = err_body.get('message') or err_body.get('error') or response.text[:200]
-            except Exception:
-                msg = response.text[:200] or str(e)
 
-            full_error = f"Stallion Express API error: {msg}"
-            _logger.error(f"[Stallion] Failed {url} → {full_error}")
+        except requests.exceptions.HTTPError as e:
+
+            try:
+
+                err_body = response.json()
+
+                error_msg = (
+
+                        err_body.get('message') or
+
+                        err_body.get('error') or
+
+                        err_body.get('detail') or
+
+                        str(err_body)
+
+                )
+
+            except Exception:
+
+                error_msg = response.text[:500] or str(e)
+
+            full_error = f"API responded with failure: {error_msg}"
+
+            _logger.error(f"[Stallion] Failed {url} → Status {response.status_code} | {full_error}")
+
             raise UserError(full_error) from e
 
         result = response.json()
