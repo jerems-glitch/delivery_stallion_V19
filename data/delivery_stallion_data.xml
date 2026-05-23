@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        Default Stallion Express carrier record.
+        Inactive until the user enters their API token and activates it.
+        integration_level 'rate_and_ship' = Get Rate + Create Shipment (Odoo 19).
+    -->
+    <record id="delivery_carrier_stallion_express" model="delivery.carrier">
+        <field name="name">Stallion Express</field>
+        <field name="delivery_type">stallion_express</field>
+        <field name="active">False</field>
+        <field name="integration_level">rate_and_ship</field>
+        <field name="stallion_default_package_code">package</field>
+        <field name="stallion_default_weight_unit">lbs</field>
+        <field name="stallion_label_format">pdf</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+
+</odoo>
